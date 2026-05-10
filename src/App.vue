@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useQuiz } from './composables/useQuiz'
+import HomePage from './components/HomePage.vue'
 import StartScreen from './components/StartScreen.vue'
 import QuizQuestion from './components/QuizQuestion.vue'
 import ResultScreen from './components/ResultScreen.vue'
@@ -26,7 +27,7 @@ const {
   <q-layout view="hHh lpR fFfF">
     <q-header elevated class="app-header">
       <q-toolbar>
-        <q-toolbar-title class="toolbar-title">
+        <q-toolbar-title class="toolbar-title" @click="restart" style="cursor: pointer">
           <q-icon name="favorite" size="24px" class="q-mr-sm" />
           Kviz o Zdravlju
         </q-toolbar-title>
@@ -35,7 +36,9 @@ const {
 
     <q-page-container>
       <q-page class="page-content">
-        <StartScreen v-if="state === 'start'" @start="startQuiz" />
+        <HomePage v-if="state === 'home'" @start-quiz="startQuiz" />
+
+        <StartScreen v-else-if="state === 'start'" @start="startQuiz" />
 
         <QuizQuestion
           v-else-if="state === 'playing' && currentQuestion"

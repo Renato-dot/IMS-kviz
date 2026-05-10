@@ -16,6 +16,8 @@ const emit = defineEmits<{
   next: []
 }>()
 
+const optionColors = ['#00897b', '#e65100', '#0288d1', '#5e35b1']
+
 function getOptionClass(index: number) {
   if (!props.answered) {
     return props.selectedAnswer === index ? 'selected' : ''
@@ -49,7 +51,6 @@ const isCorrect = computed(() =>
         color="teal"
         rounded
         size="8px"
-        class="q-mt-sm"
       />
     </div>
 
@@ -63,6 +64,7 @@ const isCorrect = computed(() =>
             :key="index"
             class="option-item"
             :class="getOptionClass(index)"
+            :style="{ '--option-color': optionColors[index] }"
             @click="!answered && emit('select', index)"
           >
             <div class="option-letter">{{ String.fromCharCode(65 + index) }}</div>
@@ -77,7 +79,7 @@ const isCorrect = computed(() =>
         </div>
 
         <transition name="slide">
-          <div v-if="answered" class="explanation-box">
+          <div v-if="answered" class="explanation-box" :class="isCorrect ? 'explanation-correct' : 'explanation-wrong'">
             <div class="explanation-header">
               <q-icon :name="isCorrect ? 'emoji_events' : 'info'" size="22px" />
               <span>{{ isCorrect ? 'Točno!' : 'Netočno' }}</span>
@@ -167,14 +169,14 @@ const isCorrect = computed(() =>
 }
 
 .option-item:hover:not(.correct):not(.wrong):not(.dimmed) {
-  border-color: #80cbc4;
-  background: #e0f2f1;
+  border-color: var(--option-color);
+  background: color-mix(in srgb, var(--option-color) 8%, white);
   transform: translateX(4px);
 }
 
 .option-item.selected {
-  border-color: #26a69a;
-  background: #e0f2f1;
+  border-color: var(--option-color);
+  background: color-mix(in srgb, var(--option-color) 10%, white);
 }
 
 .option-item.correct {
@@ -195,14 +197,15 @@ const isCorrect = computed(() =>
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: #f5f7fa;
+  background: color-mix(in srgb, var(--option-color) 12%, white);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 0.9rem;
-  color: #546e7a;
+  color: var(--option-color);
   flex-shrink: 0;
+  transition: all 0.25s ease;
 }
 
 .option-item.correct .option-letter {
@@ -235,10 +238,19 @@ const isCorrect = computed(() =>
 }
 
 .explanation-box {
-  background: #f5f7fa;
   border-radius: 14px;
   padding: 1.25rem;
-  border-left: 4px solid #26a69a;
+  border-left: 4px solid;
+}
+
+.explanation-correct {
+  background: #e8f5e9;
+  border-left-color: #43a047;
+}
+
+.explanation-wrong {
+  background: #fff3e0;
+  border-left-color: #e65100;
 }
 
 .explanation-header {
@@ -249,6 +261,14 @@ const isCorrect = computed(() =>
   font-size: 1rem;
   color: #1a1a2e;
   margin-bottom: 0.5rem;
+}
+
+.explanation-correct .explanation-header {
+  color: #2e7d32;
+}
+
+.explanation-wrong .explanation-header {
+  color: #e65100;
 }
 
 .explanation-text {
@@ -280,10 +300,5 @@ const isCorrect = computed(() =>
 .slide-enter-from {
   opacity: 0;
   transform: translateY(12px);
-}
-
-.fade-enter-active .question-content,
-.fade-leave-active .question-content {
-  transition: all 0.3s ease;
 }
 </style>

@@ -16,10 +16,10 @@ const emit = defineEmits<{
 const percentage = computed(() => Math.round((props.score / props.totalQuestions) * 100))
 
 const resultMessage = computed(() => {
-  if (percentage.value >= 90) return { title: 'Izvrsno!', subtitle: 'Pravi ste stručnjak za zdravlje!', icon: 'emoji_events', color: '#43a047' }
-  if (percentage.value >= 70) return { title: 'Vrlo dobro!', subtitle: 'Imate solidno znanje o zdravlju.', icon: 'thumb_up', color: '#26a69a' }
-  if (percentage.value >= 50) return { title: 'Dobro!', subtitle: 'Znanje je prosječno, ali ima prostora za napredak.', icon: 'sentiment_satisfied', color: '#fb8c00' }
-  return { title: 'Moglo bi bolje!', subtitle: 'Vrijeme je za malo više brige o svom zdravlju.', icon: 'school', color: '#e53935' }
+  if (percentage.value >= 90) return { title: 'Izvrsno!', subtitle: 'Pravi ste stručnjak za zdravlje!', icon: 'emoji_events', color: '#2e7d32', bg: 'linear-gradient(135deg, #e8f5e9, #c8e6c9)' }
+  if (percentage.value >= 70) return { title: 'Vrlo dobro!', subtitle: 'Imate solidno znanje o zdravlju.', icon: 'thumb_up', color: '#00897b', bg: 'linear-gradient(135deg, #e0f2f1, #b2dfdb)' }
+  if (percentage.value >= 50) return { title: 'Dobro!', subtitle: 'Znanje je prosječno, ali ima prostora za napredak.', icon: 'sentiment_satisfied', color: '#e65100', bg: 'linear-gradient(135deg, #fff3e0, #ffe0b2)' }
+  return { title: 'Moglo bi bolje!', subtitle: 'Vrijeme je za malo više brige o svom zdravlju.', icon: 'school', color: '#c62828', bg: 'linear-gradient(135deg, #ffebee, #ffcdd2)' }
 })
 
 const resultColor = computed(() => {
@@ -31,32 +31,29 @@ const resultColor = computed(() => {
 
 <template>
   <div class="result-screen">
-    <div class="result-hero">
-      <div class="result-icon-circle" :style="{ background: resultMessage.color + '18' }">
+    <div class="result-hero" :style="{ background: resultMessage.bg }">
+      <div class="result-icon-circle" :style="{ background: resultMessage.color + '20' }">
         <q-icon :name="resultMessage.icon" size="56px" :style="{ color: resultMessage.color }" />
       </div>
       <h1 class="result-title" :style="{ color: resultMessage.color }">{{ resultMessage.title }}</h1>
       <p class="result-subtitle">{{ resultMessage.subtitle }}</p>
-    </div>
 
-    <div class="score-display">
-      <div class="score-circle">
+      <div class="score-display">
         <q-circular-progress
           :value="percentage"
-          size="120px"
+          size="110px"
           :color="resultColor"
-          :track-color="'grey-3'"
+          track-color="grey-3"
           :thickness="0.15"
           show-value
-          class="q-ma-md"
         >
           <div class="score-inner">
             <span class="score-number">{{ score }}</span>
             <span class="score-total">/ {{ totalQuestions }}</span>
           </div>
         </q-circular-progress>
+        <p class="score-label">{{ percentage }}% točnih odgovora</p>
       </div>
-      <p class="score-label">{{ percentage }}% točnih odgovora</p>
     </div>
 
     <div class="answers-review">
@@ -65,7 +62,7 @@ const resultColor = computed(() => {
         v-for="(q, i) in quizQuestions"
         :key="q.id"
         class="review-item"
-        :class="{ 'review-correct': answers[i] === q.correctIndex, 'review-wrong': answers[i] !== q.correctIndex }"
+        :class="answers[i] === q.correctIndex ? 'review-correct' : 'review-wrong'"
       >
         <div class="review-header">
           <q-icon
@@ -102,20 +99,23 @@ const resultColor = computed(() => {
 .result-screen {
   max-width: 680px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 0 1.5rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .result-hero {
+  width: calc(100% + 3rem);
+  margin-left: -1.5rem;
   text-align: center;
-  margin-bottom: 2rem;
+  padding: 3rem 2rem 2.5rem;
+  border-radius: 0 0 28px 28px;
 }
 
 .result-icon-circle {
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -125,19 +125,18 @@ const resultColor = computed(() => {
 
 .result-title {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 800;
   margin: 0 0 0.5rem;
 }
 
 .result-subtitle {
   font-size: 1.05rem;
   color: #546e7a;
-  margin: 0;
+  margin: 0 0 2rem;
 }
 
 .score-display {
   text-align: center;
-  margin-bottom: 2rem;
 }
 
 .score-inner {
@@ -162,13 +161,13 @@ const resultColor = computed(() => {
 .score-label {
   font-size: 0.95rem;
   color: #546e7a;
-  margin: 0.5rem 0 0;
+  margin: 0.75rem 0 0;
   font-weight: 500;
 }
 
 .answers-review {
   width: 100%;
-  margin-bottom: 2rem;
+  margin: 2rem 0;
 }
 
 .review-title {
@@ -191,8 +190,8 @@ const resultColor = computed(() => {
 }
 
 .review-wrong {
-  background: #ffebee;
-  border-left-color: #e53935;
+  background: #fff3e0;
+  border-left-color: #e65100;
 }
 
 .review-header {
@@ -219,6 +218,7 @@ const resultColor = computed(() => {
 .review-your-answer {
   font-size: 0.85rem;
   color: #c62828;
+  font-weight: 500;
 }
 
 .review-correct-answer {

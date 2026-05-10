@@ -12,10 +12,10 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled
 }
 
-export type QuizState = 'start' | 'playing' | 'result'
+export type QuizState = 'home' | 'start' | 'playing' | 'result'
 
 export function useQuiz() {
-  const state = ref<QuizState>('start')
+  const state = ref<QuizState>('home')
   const currentIndex = ref(0)
   const score = ref(0)
   const selectedAnswer = ref<number | null>(null)
@@ -58,7 +58,7 @@ export function useQuiz() {
   }
 
   function restart() {
-    state.value = 'start'
+    state.value = 'home'
   }
 
   return {
